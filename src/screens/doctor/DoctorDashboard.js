@@ -25,7 +25,7 @@ const DoctorDashboard = () => {
         try {
             const response = await api.get(`/doctors/profile/${authState.profileId}`);
             setDoctorData(response.data);
-            setEditData(response.data); // Pre-fill edit form data
+            setEditData(response.data);
         } catch (err) {
             setError("Could not fetch your profile.");
             console.error("Fetch profile error:", err);
@@ -48,10 +48,15 @@ const DoctorDashboard = () => {
         }
     };
 
+    const openEditModal = () => {
+        setEditData(doctorData);
+        setModalVisible(true);
+    };
+
     const handleUpdateProfile = async () => {
         try {
             const response = await api.put('/doctors/profile/me', editData);
-            setDoctorData(response.data); // Update main dashboard data
+            setDoctorData(response.data);
             setModalVisible(false);
             Alert.alert("Success", "Your profile has been updated.");
         } catch (error) {
@@ -65,7 +70,7 @@ const DoctorDashboard = () => {
     };
 
     if (loading) {
-        return <ActivityIndicator size="large" color="#2c6e49" style={styles.loader} />;
+        return <ActivityIndicator size="large" color="#0d6efd" style={styles.loader} />;
     }
 
     if (error) {
@@ -83,28 +88,26 @@ const DoctorDashboard = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* --- HEADER --- */}
             <View style={styles.header}>
                 <View>
                     <Text style={styles.title}>Welcome, {doctorData?.name}</Text>
                     <Text style={styles.subtitle}>Your Professional Dashboard</Text>
                 </View>
                 <TouchableOpacity onPress={logout} style={styles.logoutIcon}>
-                    <MaterialCommunityIcons name="logout" size={28} color="#343a40" />
+                    <MaterialCommunityIcons name="logout" size={28} color="#6c757d" />
                 </TouchableOpacity>
             </View>
 
-            {/* --- AVAILABILITY CARD --- */}
             <View style={styles.card}>
                 <View style={styles.toggleContainer}>
                     <Text style={styles.cardTitle}>Your Status</Text>
                     <View style={{ alignItems: 'center', flexDirection: 'row' }}>
-                         <Text style={[styles.statusText, {color: doctorData?.is_available ? '#2c6e49' : '#6c757d'}]}>
+                         <Text style={[styles.statusText, {color: doctorData?.is_available ? '#28a745' : '#6c757d'}]}>
                             {doctorData?.is_available ? 'Available' : 'Unavailable'}
                         </Text>
                         <Switch
-                            trackColor={{ false: "#d3d3d3", true: "#a7c957" }}
-                            thumbColor={doctorData?.is_available ? "#4f772d" : "#f4f3f4"}
+                            trackColor={{ false: "#d3d3d3", true: "#89cff0" }}
+                            thumbColor={doctorData?.is_available ? "#0d6efd" : "#f4f3f4"}
                             onValueChange={handleAvailabilityChange}
                             value={doctorData?.is_available}
                         />
@@ -112,12 +115,11 @@ const DoctorDashboard = () => {
                 </View>
             </View>
 
-            {/* --- PROFILE INFO CARD --- */}
             <View style={styles.card}>
                 <View style={styles.cardHeader}>
                     <Text style={styles.cardTitle}>Your Profile</Text>
-                    <TouchableOpacity style={styles.editButton} onPress={() => setModalVisible(true)}>
-                        <MaterialCommunityIcons name="pencil-outline" size={20} color="#fff" />
+                    <TouchableOpacity style={styles.editButton} onPress={openEditModal}>
+                        <MaterialCommunityIcons name="pencil-outline" size={18} color="#fff" />
                         <Text style={styles.editButtonText}>Edit</Text>
                     </TouchableOpacity>
                 </View>
@@ -125,10 +127,9 @@ const DoctorDashboard = () => {
                 <InfoRow icon="star-circle-outline" label="Experience" value={`${doctorData?.experience} years`} />
                 <InfoRow icon="map-marker-outline" label="Location" value={doctorData?.location} />
                 <InfoRow icon="phone-outline" label="Phone" value={doctorData?.phone} />
-                <InfoRow icon="currency-inr" label="Fee" value={`₹ ${doctorData?.consultation_fee}`} />
+                <InfoRow icon="currency-inr" label="Fee" value={`INR ${doctorData?.consultation_fee}`} />
             </View>
 
-            {/* --- EDIT PROFILE MODAL --- */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -159,14 +160,13 @@ const DoctorDashboard = () => {
                     </View>
                 </View>
             </Modal>
-
         </SafeAreaView>
     );
 };
 
 const InfoRow = ({ icon, label, value }) => (
     <View style={styles.infoRow}>
-        <MaterialCommunityIcons name={icon} size={24} color="#2c6e49" style={styles.infoIcon} />
+        <MaterialCommunityIcons name={icon} size={24} color="#0d6efd" style={styles.infoIcon} />
         <View>
             <Text style={styles.infoLabel}>{label}</Text>
             <Text style={styles.infoValue}>{value}</Text>
@@ -181,33 +181,34 @@ const FormInput = ({ label, ...props }) => (
     </View>
 );
 
+// NOTE: All styles are defined once at the bottom
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#f0f4f8' },
+    container: { flex: 1, backgroundColor: '#eaf5ff' },
     loader: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20 },
-    title: { fontSize: 26, fontWeight: 'bold', color: '#1b4332' },
+    title: { fontSize: 26, fontWeight: 'bold', color: '#0d6efd' },
     subtitle: { fontSize: 16, color: '#6c757d' },
     logoutIcon: { padding: 5 },
     card: { backgroundColor: '#fff', borderRadius: 15, padding: 20, marginHorizontal: 20, marginBottom: 20, elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
     cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
-    cardTitle: { fontSize: 18, fontWeight: 'bold', color: '#1b4332' },
+    cardTitle: { fontSize: 18, fontWeight: 'bold', color: '#0d6efd' },
     toggleContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
     statusText: { fontSize: 16, fontWeight: '500', marginRight: 10},
     infoRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 10 },
     infoIcon: { marginRight: 15 },
     infoLabel: { fontSize: 14, color: '#6c757d' },
     infoValue: { fontSize: 16, fontWeight: '500', color: '#343a40' },
-    editButton: { flexDirection: 'row', backgroundColor: '#2c6e49', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 20, alignItems: 'center' },
+    editButton: { flexDirection: 'row', backgroundColor: '#0d6efd', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 20, alignItems: 'center' },
     editButtonText: { color: '#fff', fontWeight: 'bold', marginLeft: 5 },
     modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
     modalContent: { width: '90%', maxHeight: '80%', backgroundColor: 'white', borderRadius: 20, padding: 20, elevation: 10 },
-    modalTitle: { fontSize: 22, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+    modalTitle: { fontSize: 22, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', color: '#0d6efd' },
     inputContainer: { marginBottom: 15 },
     inputLabel: { fontSize: 14, color: '#6c757d', marginBottom: 5 },
     textInput: { borderWidth: 1, borderColor: '#ced4da', borderRadius: 10, padding: 12, fontSize: 16 },
     modalActions: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
     button: { flex: 1, padding: 15, borderRadius: 10, alignItems: 'center' },
-    saveButton: { backgroundColor: '#2c6e49', marginLeft: 10 },
+    saveButton: { backgroundColor: '#0d6efd', marginLeft: 10 },
     buttonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
     cancelButton: { backgroundColor: '#f8f9fa', borderWidth: 1, borderColor: '#ced4da' },
     cancelButtonText: { color: '#343a40', fontWeight: 'bold', fontSize: 16 },
