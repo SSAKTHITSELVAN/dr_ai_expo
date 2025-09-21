@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
+import { View, Text, ScrollView, Alert, StyleSheet } from 'react-native';
 import api from '../../services/api';
 import { useAuth } from '../../services/AuthContext';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { globalStyles } from '../../styles/globalStyles';
 import AIExplanationCard from '../../components/AIExplanationCard';
 
 const GovernmentSchemesScreen = () => {
@@ -31,15 +30,50 @@ const GovernmentSchemesScreen = () => {
     }
 
     return (
-        <ScrollView style={globalStyles.container}>
-            <Text style={globalStyles.title}>Government Health Schemes</Text>
+        <ScrollView style={styles.container}>
+            <Text style={styles.title}>Government Health Schemes</Text>
             {schemes ? (
                 <AIExplanationCard explanation={schemes} />
             ) : (
-                <Text style={{textAlign: 'center'}}>No relevant schemes found at this time.</Text>
+                <View style={styles.emptyCard}>
+                    <Text style={styles.emptyText}>No relevant schemes found at this time.</Text>
+                </View>
             )}
         </ScrollView>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#eaf5ff', // Light blue background
+        padding: 16,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#0d6efd', // Primary blue
+        textAlign: 'center',
+        marginBottom: 16,
+    },
+    emptyCard: {
+        backgroundColor: '#ffffff',
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 20,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    emptyText: {
+        textAlign: 'center',
+        color: '#64748b',
+        fontSize: 16,
+        paddingVertical: 20,
+    }
+});
 
 export default GovernmentSchemesScreen;
