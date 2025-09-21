@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuth } from '../../services/AuthContext';
 
 const LoginScreen = ({ navigation }) => {
@@ -7,6 +8,7 @@ const LoginScreen = ({ navigation }) => {
     const [password, setPassword] = useState('password123');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const { login } = useAuth();
 
     const handleLogin = async () => {
@@ -28,8 +30,9 @@ const LoginScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Welcome Back!</Text>
-            <Text style={styles.subtitle}>Sign in to continue</Text>
+            <MaterialCommunityIcons name="brain" size={60} color="#0d6efd" style={styles.logo} />
+            <Text style={styles.title}>Welcome to DR.AI</Text>
+            <Text style={styles.subtitle}>Your Personal Health Assistant</Text>
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
             <View style={styles.inputContainer}>
                 <TextInput
@@ -42,15 +45,18 @@ const LoginScreen = ({ navigation }) => {
                     placeholderTextColor="#888"
                 />
             </View>
-            <View style={styles.inputContainer}>
+            <View style={styles.passwordContainer}>
                 <TextInput
-                    style={styles.input}
+                    style={styles.passwordInput}
                     placeholder="Password"
                     value={password}
                     onChangeText={setPassword}
-                    secureTextEntry
+                    secureTextEntry={!isPasswordVisible}
                     placeholderTextColor="#888"
                 />
+                <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={styles.eyeIcon}>
+                    <MaterialCommunityIcons name={isPasswordVisible ? 'eye-off' : 'eye'} size={24} color="#6c757d" />
+                </TouchableOpacity>
             </View>
             <TouchableOpacity 
                 style={[styles.button, loading && styles.buttonDisabled]} 
@@ -78,6 +84,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 24,
         backgroundColor: '#eaf5ff', // Light blue background
+    },
+    logo: {
+        alignSelf: 'center',
+        marginBottom: 20,
     },
     title: {
         fontSize: 32,
@@ -107,6 +117,24 @@ const styles = StyleSheet.create({
         fontSize: 16,
         borderWidth: 1,
         borderColor: '#ced4da',
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: '#ced4da',
+        marginBottom: 15,
+    },
+    passwordInput: {
+        flex: 1,
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        fontSize: 16,
+    },
+    eyeIcon: {
+        padding: 15,
     },
     button: {
         backgroundColor: '#0d6efd', // Primary blue

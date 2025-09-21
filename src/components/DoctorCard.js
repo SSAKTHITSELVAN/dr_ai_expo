@@ -3,14 +3,24 @@ import { View, Text, TouchableOpacity, Linking, Alert, StyleSheet } from 'react-
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const DoctorCard = ({ doctor }) => {
-    const handleContact = (number) => {
+    const handleWhatsApp = (number) => {
         if (number) {
             const formattedNumber = number.startsWith('+') ? number : `+${number}`;
             Linking.openURL(`whatsapp://send?phone=${formattedNumber}`).catch(() => {
                 Alert.alert("Error", "Could not open WhatsApp. Please make sure it is installed.");
             });
         } else {
-            Alert.alert("No Contact", "Doctor's contact number is not available.");
+            Alert.alert("No Contact", "Doctor's WhatsApp number is not available.");
+        }
+    };
+
+    const handleCall = (number) => {
+        if (number) {
+            Linking.openURL(`tel:${number}`).catch(() => {
+                Alert.alert("Error", "Could not make the call.");
+            });
+        } else {
+            Alert.alert("No Contact", "Doctor's phone number is not available.");
         }
     };
     
@@ -31,13 +41,22 @@ const DoctorCard = ({ doctor }) => {
                 <Text style={styles.detailLabel}>Fee:</Text>
                 <Text style={styles.detailValue}>INR {doctor.consultation_fee}</Text>
             </View>
-            <TouchableOpacity 
-                style={styles.button}
-                onPress={() => handleContact(doctor.whatsapp)}
-            >
-                <MaterialCommunityIcons name="whatsapp" size={20} color="#fff" />
-                <Text style={styles.buttonText}>Contact on WhatsApp</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity 
+                    style={[styles.button, styles.whatsappButton]}
+                    onPress={() => handleWhatsApp(doctor.whatsapp)}
+                >
+                    <MaterialCommunityIcons name="whatsapp" size={20} color="#fff" />
+                    <Text style={styles.buttonText}>WhatsApp</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    style={[styles.button, styles.callButton]}
+                    onPress={() => handleCall(doctor.phone)}
+                >
+                    <MaterialCommunityIcons name="phone" size={20} color="#fff" />
+                    <Text style={styles.buttonText}>Call</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
@@ -84,19 +103,31 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#212529',
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 15,
+    },
     button: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 15,
-        backgroundColor: '#25D366', // WhatsApp green
         padding: 12,
         borderRadius: 10,
+    },
+    whatsappButton: {
+        backgroundColor: '#25D366', // WhatsApp green
+        marginRight: 5,
+    },
+    callButton: {
+        backgroundColor: '#0d6efd', // Primary blue
+        marginLeft: 5,
     },
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 15,
         marginLeft: 10,
     },
 });
